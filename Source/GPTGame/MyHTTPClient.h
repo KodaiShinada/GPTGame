@@ -21,6 +21,8 @@ public:
     UFUNCTION(BlueprintCallable, Category = "ChatGPT")
     FString GetResponse() const;
 
+    FString GetAPIKey() const;
+
 protected:
     void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
