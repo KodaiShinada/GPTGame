@@ -22,7 +22,7 @@ FString UMyHTTPClient::GetAPIKey() const
     return TEXT(""); // error
 }
 
-void UMyHTTPClient::SendChatGPTRequest(const FString& Prompt)
+void UMyHTTPClient::SendChatGPTRequest(const FText& Prompt)
 {
     FString APIKey = GetAPIKey();
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
@@ -32,14 +32,15 @@ void UMyHTTPClient::SendChatGPTRequest(const FString& Prompt)
     Request->SetHeader(TEXT("Content-Type"), TEXT("application/json"));
     Request->SetHeader(TEXT("Authorization"), FString::Printf(TEXT("Bearer %s"), *APIKey)); // API key
 
+    FString PromptString = Prompt.ToString();
     FString RequestBody = FString::Printf(TEXT(
         "{"
         "\"model\": \"gpt-3.5-turbo\","
         "\"messages\": ["
-        "    {\"role\": \"system\", \"content\": \"You are a helpful assistant.\"},"
+        "    {\"role\": \"system\", \"content\": \"You are a robot, an NPC in the game.Please respond appropriately to the requests thrown at you.However, if you receive a sentence that instructs you to move, such as [Move to the black switch], your response should only be the index number of the corresponding object in the list you provided.ex)1 If no corresponding object is found, no corresponding object is found in the same language as the request.Please reply with the following.\"},"
         "    {\"role\": \"user\", \"content\": \"%s\"}"
         "]"
-        "}"), *Prompt);
+        "}"), *PromptString);
     Request->SetContentAsString(RequestBody);
 
 
@@ -67,22 +68,22 @@ void UMyHTTPClient::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr
                 FString Content = MessageObj->GetStringField(TEXT("content"));
 
                 // Saving Results
-                ResponseString = Content;
+                ResponseText = FText::FromString(Content);
             }
         }
         else
         {
-            ResponseString = TEXT("Failed to parse JSON response");
+            ResponseText = FText::FromString(TEXT("Failed to parse JSON response"));
         }
     }
     else
     {
-        ResponseString = TEXT("Request failed: ") + Request->GetURL();
+        ResponseText = FText::FromString(TEXT("Request failed: ") + Request->GetURL());
     }
 }
 
 
-FString UMyHTTPClient::GetResponse() const
+FText UMyHTTPClient::GetResponse() const
 {
-    return ResponseString;
+    return ResponseText;
 }

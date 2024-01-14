@@ -16,10 +16,10 @@ public:
     UMyHTTPClient();
 
     UFUNCTION(BlueprintCallable, Category = "ChatGPT")
-    void SendChatGPTRequest(const FString& Prompt);
+    void SendChatGPTRequest(const FText& Prompt);
 
     UFUNCTION(BlueprintCallable, Category = "ChatGPT")
-    FString GetResponse() const;
+    FText GetResponse() const;
 
     FString GetAPIKey() const;
 
@@ -27,6 +27,6 @@ protected:
     void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
 private:
-    FString ResponseString;
+    FText ResponseText;
 };
 
