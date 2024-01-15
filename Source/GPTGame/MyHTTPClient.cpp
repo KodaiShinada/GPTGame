@@ -4,27 +4,11 @@
 #include "MyHTTPClient.h"
 #include "Misc/ConfigCacheIni.h"
 
-UMyHTTPClient::UMyHTTPClient()
-{
+UMyHTTPClient::UMyHTTPClient() {}
 
-}
-
-FString UMyHTTPClient::GetAPIKey() const
-{
-    FString APIKey;
-    if (GConfig->GetString(TEXT("/Script/GPTGame.BP_FirstPersonGameMode"), TEXT("OpenAIAPiKey"), APIKey, GGameIni))
-    {
-        UE_LOG(LogTemp, Warning, TEXT("API Key: %s"), *APIKey);//api log
-        return APIKey;
-    }
-
-    UE_LOG(LogTemp, Error, TEXT("API Key not found"));
-    return TEXT(""); // error
-}
 
 void UMyHTTPClient::SendChatGPTRequest(const FText& Prompt)
 {
-    FString APIKey = GetAPIKey();
     TSharedRef<IHttpRequest, ESPMode::ThreadSafe> Request = FHttpModule::Get().CreateRequest();
 
     Request->SetURL(TEXT("https://api.openai.com/v1/chat/completions"));
@@ -46,7 +30,7 @@ void UMyHTTPClient::SendChatGPTRequest(const FText& Prompt)
 
     Request->OnProcessRequestComplete().BindUObject(this, &UMyHTTPClient::OnResponseReceived);
     Request->ProcessRequest();
-    UE_LOG(LogTemp, Warning, TEXT("Request Body: %s"), *RequestBody);
+    UE_LOG(LogTemp, Warning, TEXT("Request Body: %s, API Key: %s"), *RequestBody, *APIKey);
 }
 
 void UMyHTTPClient::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful)
@@ -79,6 +63,7 @@ void UMyHTTPClient::OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr
     else
     {
         ResponseText = FText::FromString(TEXT("Request failed: ") + Request->GetURL());
+
     }
 }
 

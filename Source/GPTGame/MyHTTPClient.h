@@ -21,12 +21,17 @@ public:
     UFUNCTION(BlueprintCallable, Category = "ChatGPT")
     FText GetResponse() const;
 
-    FString GetAPIKey() const;
+    UFUNCTION(BlueprintCallable, Category = "ChatGPT")
+    void SetAPIKey(const FString& NewAPIKey)
+    {
+        APIKey = NewAPIKey;
+    };
 
 protected:
     void OnResponseReceived(FHttpRequestPtr Request, FHttpResponsePtr Response, bool bWasSuccessful);
 
 private:
     FText ResponseText;
+    FString APIKey;
 };
 
