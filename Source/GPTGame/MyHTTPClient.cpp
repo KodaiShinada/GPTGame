@@ -21,7 +21,7 @@ void UMyHTTPClient::SendChatGPTRequest(const FText& Prompt)
         "{"
         "\"model\": \"gpt-3.5-turbo\","
         "\"messages\": ["
-        "    {\"role\": \"system\", \"content\": \"You are a robot, an NPC in the game.Please respond appropriately to the requests thrown at you.However, if you receive a sentence that instructs you to move, such as [Move to the black switch], your response should only be the index number of the corresponding object in the list you provided.ex)1 If no corresponding object is found, no corresponding object is found in the same language as the request.Please reply with the following.\"},"
+        "    {\"role\": \"system\", \"content\": \"You are a robot, an NPC in the game.Please respond appropriately to the requests thrown at you.However, if you receive a sentence that instructs you to move, such as [Move to the black switch], your response should only be the index number of the corresponding object in the list you provided.ex)1. And respond with -1 to instructions to move to the player's position If no corresponding object is found, no corresponding object is found in the same language as the request.Please reply with the following.\"},"
         "    {\"role\": \"user\", \"content\": \"%s\"}"
         "]"
         "}"), *PromptString);
